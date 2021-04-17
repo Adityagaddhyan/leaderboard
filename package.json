@@ -1,0 +1,19 @@
+{
+  "name": "leaderboard",
+  "version": "1.0.0",
+  "description": "game, js",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Adityagaddhyan/leaderboard.git"
+  },
+  "author": "Aditya Gaddhyan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Adityagaddhyan/leaderboard/issues"
+  },
+  "homepage": "https://github.com/Adityagaddhyan/leaderboard#readme"
+}
