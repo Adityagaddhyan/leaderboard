@@ -1,9 +1,7 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
+var jwt = require("jsonwebtoken");
 exports.register = async (req, res) => {
-  //validate the user data if err=> return 400
-  //check if user already exist =>400
-  
   // hash password
   const saltRounds = 5;
   const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
@@ -16,9 +14,9 @@ exports.register = async (req, res) => {
     role: req.body.role || "player",
   });
   try {
-    await user.save({ w: 1 }, (err, result) => {
+    await user.save({ w: 1 }, (err) => {
       if (err) {
-        console.log(err);
+        throw "unable to create user";
       } else {
         res.send({
           STATUS: "USER CREATED SUCESSFULLY!",
@@ -31,4 +29,19 @@ exports.register = async (req, res) => {
   } catch (err) {
     res.status(400).json({ ERR_MESSAGE: "Unable to create user" });
   }
+};
+exports.login = async (req, res) => {
+  //check if password is correct
+  const user = await User.find({ phone: req.body.phone }).limit(1);
+  const isPasswordCorrect = await bcrypt.compare(
+    req.body.password,
+    user[0].passwordHash
+  );
+  if (!isPasswordCorrect)
+    res.status(400).json({ ERR_MESSAGE: "Password is inncorect." });
+  //write in header and send
+  var token = jwt.sign({ _id: user[0]._id }, process.env.SECRET_TEXT, {
+    expiresIn: "1h",
+  });
+  res.header("auth", token).send({STATUS:"You are successfully logged in.", phone:user[0].phone,name:user[0].name,email:user[0].email});
 };

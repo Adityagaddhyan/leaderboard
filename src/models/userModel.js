@@ -4,18 +4,22 @@ const userSchema=new Schema({
     // (Name, Age, Location, Email Id, phoneNumber).
     name: {
         type: String,
-        required: true,
         maxlength: 40,
     },
     email: {
         type: String,
         trim: true,
+        sparse:true,
+        index:true,
         unique: true,
-        required: true
     },
     phone:{
         type:String,
         trim:true,
+        unique:true,
+        index:true,
+        required: true
+
     },
     passwordHash: {
         type: String,
