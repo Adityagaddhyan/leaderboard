@@ -12,6 +12,7 @@ exports.register = async (req, res) => {
     phone: req.body.phone,
     passwordHash: await hashedPassword,
     role: req.body.role || "player",
+    location:req.body.location
   });
   try {
     await user.save({ w: 1 }, (err) => {
