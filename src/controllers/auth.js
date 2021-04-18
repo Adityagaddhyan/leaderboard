@@ -12,7 +12,7 @@ exports.register = async (req, res) => {
     phone: req.body.phone,
     passwordHash: await hashedPassword,
     role: req.body.role || "player",
-    location:req.body.location
+    location: req.body.location,
   });
   try {
     await user.save({ w: 1 }, (err) => {
@@ -44,5 +44,26 @@ exports.login = async (req, res) => {
   var token = jwt.sign({ _id: user[0]._id }, process.env.SECRET_TEXT, {
     expiresIn: "1h",
   });
-  res.header("auth", token).send({STATUS:"You are successfully logged in.", phone:user[0].phone,name:user[0].name,email:user[0].email});
+  res.cookie("auth", token,{ httpOnly: true, maxAge:  100000 });
+  res.json({
+    STATUS: "You are successfully logged in.",
+    phone: user[0].phone,
+    name: user[0].name,
+    email: user[0].email,
+    token:token
+  });
+};
+exports.updateProfile = async (req, res) => {
+  let toUpdateObject = {};
+  if (req.body.email) toUpdateObject.email = req.body.email;
+  if (req.body.location) toUpdateObject.location = req.body.location;
+  if (req.body.name) toUpdateObject.name = req.body.name;
+  if (req.body.password) {
+    const saltRounds = 5;
+    const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+    toUpdateObject.passwordHash = hashedPassword;
+  }
+
+  const updatedUser=await User.findOneAndUpdate({phone:req.body.phone},toUpdateObject,{new:true});
+  res.send(updatedUser);
 };
