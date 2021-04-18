@@ -35,7 +35,6 @@ exports.playGame = async (req, res) => {
         console.log(err);
         throw "unable to save results";
       } else {
-        console.log("inelse");
         return res.send({ game: game });
       }
     });
@@ -53,8 +52,8 @@ exports.postResult = async (req, res) => {
 
   let winner;
   let toUpdateScoreboardObject = {
-    gameID: game.gameID,
-    win:"1"
+    gameID: game[0].gameID,
+    win: "1",
   };
   if (req.body.winner == "1") {
     winner = game[0].player1_ID;
@@ -76,22 +75,28 @@ exports.postResult = async (req, res) => {
 
   try {
     await ScoreBoard.findOneAndUpdate(
-      { player: toUpdateScoreboardObject.winner, gameID: toUpdateScoreboardObject.gameID },
       {
         player: toUpdateScoreboardObject.winner,
         gameID: toUpdateScoreboardObject.gameID,
-        $inc: { score: toUpdateScoreboardObject.winscore,wins:1 },
       },
-      {upsert:true}
+      {
+        player: toUpdateScoreboardObject.winner,
+        gameID: toUpdateScoreboardObject.gameID,
+        $inc: { score: toUpdateScoreboardObject.winscore, wins: 1 },
+      },
+      { upsert: true }
     );
     await ScoreBoard.findOneAndUpdate(
-      { player: toUpdateScoreboardObject.looser, gameID: toUpdateScoreboardObject.gameID },
       {
         player: toUpdateScoreboardObject.looser,
         gameID: toUpdateScoreboardObject.gameID,
-        $inc: { score: toUpdateScoreboardObject.loosescore,wins: 0 },
       },
-      {upsert:true}
+      {
+        player: toUpdateScoreboardObject.looser,
+        gameID: toUpdateScoreboardObject.gameID,
+        $inc: { score: toUpdateScoreboardObject.loosescore, wins: 0 },
+      },
+      { upsert: true }
     );
     const game = await Game.findOneAndUpdate(
       { _id: req.body.gameID },
@@ -109,5 +114,22 @@ exports.postResult = async (req, res) => {
 };
 exports.leaderboard = async (req, res) => {
   const gameID = req.body.gameID;
-  const leaderboard = await Game.find({ gameID: gameID });
+  console.log(gameID);
+  try {
+    const leaderboard = await ScoreBoard.aggregate([
+      { $match: { "gameID": parseInt(gameID) } },
+      {
+        $group: {
+          _id: { playerID: "$player", gameID: "$gameID" },
+          score: { $sum: "$score" },
+          win: { $sum: "$win" }
+        },
+      },
+    ])
+    .sort('-score').limit(3);
+    console.log(leaderboard);
+    return res.send(leaderboard);
+  } catch (err) {
+    console.log(err);
+  }
 };
