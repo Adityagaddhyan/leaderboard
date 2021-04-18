@@ -1,6 +1,7 @@
 # Welcome to Leaderboard!
 This is the backend implementaion of 2 player game's leader board using mongoDb as the database and node as the backend framework. The express engine is used to build the API. Go through the api details below to know more about API.
 ### postman collection : https://www.getpostman.com/collections/842cf5158bd2f3cb1be3
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/96ec1c5351486fdb68c0)
 ### Github link: https://github.com/Adityagaddhyan/leaderboard/
 
 ### AWS : http://18.213.94.240:3000

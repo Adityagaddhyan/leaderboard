@@ -1,0 +1,127 @@
+<h1>Leaderboard</h1>
+<a href="https://github.com/Adityagaddhyan/leaderboard">see on github</a>
+<br>
+<br>
+<br>
+
+<div class="postman-run-button"
+data-postman-action="collection/import"
+data-postman-var-1="96ec1c5351486fdb68c0"></div>
+<script type="text/javascript">
+  (function (p,o,s,t,m,a,n) {
+    !p[s] && (p[s] = function () { (p[t] || (p[t] = [])).push(arguments); });
+    !o.getElementById(s+t) && o.getElementsByTagName("head")[0].appendChild((
+      (n = o.createElement("script")),
+      (n.id = s+t), (n.async = 1), (n.src = m), n
+    ));
+  }(window, document, "_pm", "PostmanRunObject", "https://run.pstmn.io/button.js"));
+</script>
+<style>
+    code{
+        background-color: rgb(195, 194, 194);
+    }
+</style>
+<div>
+    <h1 id="welcome-to-leaderboard">Welcome to Leaderboard!</h1>
+<p>This is the backend implementaion of 2 player game&#39;s leader board using mongoDb as the database and node as the backend framework. The express engine is used to build the API. Go through the api details below to know more about API.</p>
+<h3 id="postman-collection--httpswwwgetpostmancomcollections842cf5158bd2f3cb1be3">postman collection : <a href="https://www.getpostman.com/collections/96ec1c5351486fdb68c0">https://www.getpostman.com/collections/96ec1c5351486fdb68c0</a></h3>
+<h3 id="github-link-httpsgithubcomadityagaddhyanleaderboard">Github link: <a href="https://github.com/Adityagaddhyan/leaderboard/">https://github.com/Adityagaddhyan/leaderboard/</a></h3>
+<h3 id="aws--http18213942403000">AWS : <a href="http://18.213.94.240:3000">http://18.213.94.240:3000</a></h3>
+<ul>
+<li>Hosted on EC2 instance.</li>
+<li>Elastic IP used.</li>
+<li>Ingress open on port 3000.<h2 id="to-test">to test:</h2>
+</li>
+<li>Open link in postman</li>
+<li>make request.</li>
+<li>preferably create an admin and a user account to test the application.</li>
+</ul>
+<h2 id="key-features">Key Features</h2>
+<ul>
+<li>Error handling is used extensively to handle all the possible errors.</li>
+<li>Hosted on AWS. </li>
+</ul>
+<h1 id="api-details">API DETAILS</h1>
+<h2 id="auth-api">AUTH API</h2>
+<h3 id="register">Register</h3>
+<ul>
+<li>mobile and password necessary to register.
+POST /auth/register
+body:<pre><code class="language-javascript">{
+  &quot;name&quot;:&quot;ayush raj&quot;,
+  &quot;location&quot;:&quot;kolkata&quot;, //optional
+  &quot;email&quot;:&quot;ayush34323@gmail.com&quot;, //required
+  &quot;phone&quot;:&quot;8888888383&quot;,
+  &quot;password&quot;:&quot;12345@&quot; //required,
+  &quot;role&quot;: &quot;admin&quot; //to register admin account. For player, not required
+}
+The Phone number and the email should not be registered
+</code></pre>
+<h3 id="login">LOGIN</h3>
+```javascript
+POST &#39;<a href="http://18.213.94.240:3000/auth/login&#39;">http://18.213.94.240:3000/auth/login&#39;</a> \</li>
+<li>-data-raw &#39;{
+   &quot;phone&quot;:&quot;9386280041&quot;, //login only through phone as email can be null
+   &quot;password&quot;:&quot;12345@&quot;
+}&#39;
+```<h3 id="update-profile">Update Profile</h3>
+```javascript
+PUT &#39;<a href="http://18.213.94.240:3000/auth/update&#39;">http://18.213.94.240:3000/auth/update&#39;</a> \</li>
+<li>-header &#39;auth: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDdiMmExZWViYzc0NTMzNTU2YTRkMjEiLCJpYXQiOjE2MTg2OTU3NzcsImV4cCI6MTYxODY5OTM3N30.fUylSVEH871WirLWXeX2fQDuEr9u94-Bps3VjEdguVI&#39; \ //JWT TOKEN</li>
+<li>-data-raw &#39;{
+   &quot;phone&quot;:&quot;9386280041&quot;, //phone number can not be changed and is required
+   &quot;name&quot;:&quot;jhon&quot;, //all the other paramaters including password can be changed with this route. all the provided data is updated corresponding to the user.
+   &quot;location&quot;:&quot;mumbai&quot;
+}&#39;
+```<h3 id="logout">LOGOUT</h3>
+```javascript
+GET &#39;<a href="http://18.213.94.240:3000/auth/logout&#39;">http://18.213.94.240:3000/auth/logout&#39;</a> \</li>
+<li>-data-raw &#39;&#39;
+```</li>
+</ul>
+<h2 id="game-apis">GAME APIs</h2>
+<h3 id="get-game">Get Game</h3>
+<p>Get the list of all the games with gameID.</p>
+<pre><code class="language-javascript"> GET &#39;http://18.213.94.240:3000/auth/login&#39;
+</code></pre>
+<h3 id="submit-score">Submit Score</h3>
+<pre><code class="language-javascript"> POST &#39;http://18.213.94.240:3000/game/score&#39; \
+--data-raw &#39;{
+&quot;opponentMobile&quot;:&quot;8888888888&quot;, //opponent mobile number is required and opponnent should be registered
+&quot;p1_score&quot;:&quot;100&quot;, //player 1 score(self)
+&quot;p2_score&quot;:&quot;80&quot;, //opponent score
+&quot;gameID&quot;:&quot;3&quot;    //get game id from last route
+}&#39;
+//can be accessed only after logging in
+</code></pre>
+<h3 id="get-pending">Get Pending</h3>
+<ul>
+<li>need ADMIN rights</li>
+<li>Gives the list of all the games whose result needs to be declared
+```javascript
+POST &#39;<a href="http://18.213.94.240:3000/game/pending&#39;">http://18.213.94.240:3000/game/pending&#39;</a> \</li>
+</ul>
+<pre><code>### POST RESULT
+- Used by admin to post the result of games and save in database.
+- Get game id from /game/pending
+
+```javascript
+ --request POST &#39;http://18.213.94.240:3000/game/result&#39; \
+--data-raw &#39;{
+&quot;gameID&quot;:&quot;607c1dd3b2561d39b861c01f&quot;,
+&quot;winner&quot;:&quot;1&quot;
+}&#39;
+</code></pre>
+<h3 id="get-leaderboard">Get Leaderboard</h3>
+<ul>
+<li>returns the leader board of the game
+```javascript
+GET &#39;<a href="http://18.213.94.240:3000/game/leaderboard&#39;">http://18.213.94.240:3000/game/leaderboard&#39;</a> \</li>
+<li>-data-raw &#39;{
+&quot;gameID&quot;:&quot;1&quot; //required
+}&#39;</li>
+</ul>
+<pre><code>
+</code></pre>
+
+</div>

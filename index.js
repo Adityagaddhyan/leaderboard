@@ -28,7 +28,7 @@ app.use(cookieParser());
 app.use(cors());
 
 //routes
-app.get("/",(req,res)=>{res.send("welcome!")})
+app.get("/",(req,res)=>{res.sendFile("home.htm",{root: __dirname })})
 app.use("/auth",authRoutes);
 app.use("/game",gameRoutes);
 
@@ -36,3 +36,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("listening on", process.env.PORT);
 });
+
