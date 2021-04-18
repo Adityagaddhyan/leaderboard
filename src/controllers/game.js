@@ -127,9 +127,8 @@ exports.leaderboard = async (req, res) => {
       },
     ])
     .sort('-score').limit(3);
-    console.log(leaderboard);
     return res.send(leaderboard);
   } catch (err) {
-    console.log(err);
+    return res.status(400).json({ERR_MESSAGE:"BAD REQUEST!"});
   }
 };
