@@ -36,3 +36,7 @@ exports.playGame = async (req, res) => {
     return res.status(400).json({ ERR_MESSAGE: "unable to save results" });
   }
 };
+exports.getPending=async(req,res)=>{
+  const pending=await Game.find({resultDeclared:false});
+  return res.send({data:pending});
+}

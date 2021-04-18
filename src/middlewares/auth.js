@@ -51,3 +51,16 @@ exports.isAuthorized = async (req, res, next) => {
       .json({ ERR_MESSAGE: "INVALID TOKEN. Please log in." });
   }
 };
+exports.isAdmin=async(req,res,next)=>{
+  const userID=req.userID;
+  const user=await User.find({_id:userID}).limit(1);
+  if(user.length==0){
+    res.status(403).json({ERR_MESSAGE:"Please Login."});
+  }
+  else if(user[0].role!='admin'){
+    res.status(403).json({ERR_MESSAGE:"You need to be the admin to access this"});
+  }
+  else{
+    next();
+  }
+}

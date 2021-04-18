@@ -39,13 +39,13 @@ exports.login = async (req, res) => {
     user[0].passwordHash
   );
   if (!isPasswordCorrect)
-    res.status(400).json({ ERR_MESSAGE: "Password is inncorect." });
+    return res.status(400).json({ ERR_MESSAGE: "Password is inncorect." });
   //write in header and send
   var token = jwt.sign({ _id: user[0]._id }, process.env.SECRET_TEXT, {
     expiresIn: "1h",
   });
   res.cookie("auth", token,{ httpOnly: true, maxAge:  1000000 });
-  res.json({
+  return res.json({
     STATUS: "You are successfully logged in.",
     phone: user[0].phone,
     name: user[0].name,
