@@ -2,9 +2,7 @@ const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 exports.checkIfEmailExist = async (req, res, next) => {
   const emailExists = await User.find({ email: req.body.email }).limit(1);
-  console.log("req", req.body.email);
   if (emailExists.length && req.body.email) {
-    console.log("from", emailExists);
     return res.status(400).json({ ERR_MESSAGE: "email already registered" });
   } else {
     next();
@@ -39,7 +37,6 @@ exports.checkIfPhoneIsValid = async (req, res, next) => {
 };
 exports.isAuthorized = async (req, res, next) => {
   const token = req.cookies.auth;
-  console.log(req.cookies.auth);
   if (!token)
     res
       .status(401)
