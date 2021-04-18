@@ -94,7 +94,7 @@ exports.postResult = async (req, res) => {
       {
         player: toUpdateScoreboardObject.looser,
         gameID: toUpdateScoreboardObject.gameID,
-        $inc: { score: toUpdateScoreboardObject.loosescore, wins: 0 },
+        $inc: { score: toUpdateScoreboardObject.loosescore},
       },
       { upsert: true }
     );
@@ -122,7 +122,7 @@ exports.leaderboard = async (req, res) => {
         $group: {
           _id: { playerID: "$player", gameID: "$gameID" },
           score: { $sum: "$score" },
-          win: { $sum: "$win" }
+          win: { $sum: "$wins" }
         },
       },
     ])
