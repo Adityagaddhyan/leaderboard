@@ -1,6 +1,7 @@
 const getUserIdFromMobile = require("../utils/getUserIfFromMobile");
 const Game = require("../models/gameModel");
 const { findOneAndUpdate } = require("../models/gameModel");
+const ScoreBoard = require("../models/scoreboardModel");
 exports.getGame = (req, res) => {
   const games = [
     { id: 1, name: "game 1" },
@@ -51,16 +52,47 @@ exports.postResult = async (req, res) => {
   const game = await Game.find({ _id: req.body.gameID }).limit(1);
 
   let winner;
+  let toUpdateScoreboardObject = {
+    gameID: game.gameID,
+    win:"1"
+  };
   if (req.body.winner == "1") {
     winner = game[0].player1_ID;
+    toUpdateScoreboardObject.winner = game[0].player1_ID;
+    toUpdateScoreboardObject.looser = game[0].player2_ID;
+    toUpdateScoreboardObject.winscore = game[0].player1_score;
+    toUpdateScoreboardObject.loosescore = game[0].player2_score;
   } else {
+    toUpdateScoreboardObject.winner = game[0].player2_ID;
+    toUpdateScoreboardObject.looser = game[0].player1_ID;
+    toUpdateScoreboardObject.winscore = game[0].player2_score;
+    toUpdateScoreboardObject.loosescore = game[0].player1_score;
     winner = game[0].player2_ID;
   }
   const toUpdateObject = {
     resultDeclared: true,
     winner: winner,
   };
+
   try {
+    await ScoreBoard.findOneAndUpdate(
+      { player: toUpdateScoreboardObject.winner, gameID: toUpdateScoreboardObject.gameID },
+      {
+        player: toUpdateScoreboardObject.winner,
+        gameID: toUpdateScoreboardObject.gameID,
+        $inc: { score: toUpdateScoreboardObject.winscore,wins:1 },
+      },
+      {upsert:true}
+    );
+    await ScoreBoard.findOneAndUpdate(
+      { player: toUpdateScoreboardObject.looser, gameID: toUpdateScoreboardObject.gameID },
+      {
+        player: toUpdateScoreboardObject.looser,
+        gameID: toUpdateScoreboardObject.gameID,
+        $inc: { score: toUpdateScoreboardObject.loosescore,wins: 0 },
+      },
+      {upsert:true}
+    );
     const game = await Game.findOneAndUpdate(
       { _id: req.body.gameID },
       toUpdateObject,
@@ -69,13 +101,13 @@ exports.postResult = async (req, res) => {
     console.log(game);
     return res.json({ STATUS: "Result declared sucessfully!" });
   } catch (err) {
+    console.log(err);
     return res.status(400).json({
       ERR_MESSAGE: "INVALID REQUEST. please check the passed params.",
     });
   }
 };
 exports.leaderboard = async (req, res) => {
-  const gameID=req.body.gameID;
-  const leaderboard=await Game.find({gameID:gameID});
-  
+  const gameID = req.body.gameID;
+  const leaderboard = await Game.find({ gameID: gameID });
 };
