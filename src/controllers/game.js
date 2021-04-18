@@ -94,7 +94,7 @@ exports.postResult = async (req, res) => {
       {
         player: toUpdateScoreboardObject.looser,
         gameID: toUpdateScoreboardObject.gameID,
-        $inc: { score: toUpdateScoreboardObject.loosescore},
+        $inc: { score: toUpdateScoreboardObject.loosescore },
       },
       { upsert: true }
     );
@@ -117,18 +117,36 @@ exports.leaderboard = async (req, res) => {
   console.log(gameID);
   try {
     const leaderboard = await ScoreBoard.aggregate([
-      { $match: { "gameID": parseInt(gameID) } },
+      { $match: { gameID: parseInt(gameID) } },
       {
         $group: {
           _id: { playerID: "$player", gameID: "$gameID" },
           score: { $sum: "$score" },
-          win: { $sum: "$wins" }
+          win: { $sum: "$wins" },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id.playerID",
+          foreignField: "_id",
+          as: "playerDetails",
+        },
+      },
+      {
+        $project: {
+          "playerDetails._id":0,
+          "playerDetails.passwordHash":0,
+          "playerDetails._v":0,
+          "playerDetails.role":0
         },
       },
     ])
-    .sort('-score').limit(3);
+      .sort("-score")
+      .limit(3);
     return res.send(leaderboard);
   } catch (err) {
-    return res.status(400).json({ERR_MESSAGE:"BAD REQUEST!"});
+    console.log(err);
+    return res.status(400).json({ ERR_MESSAGE: "BAD REQUEST!" });
   }
 };
