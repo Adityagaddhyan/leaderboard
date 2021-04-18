@@ -51,6 +51,6 @@ exports.isAuthorized = async (req, res, next) => {
   } catch (err) {
     res
       .status(400)
-      .json({ ERR_MESSAGE: "INVALID TOKEN" });
+      .json({ ERR_MESSAGE: "INVALID TOKEN. Please log in." });
   }
 };

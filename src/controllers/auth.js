@@ -67,3 +67,10 @@ exports.updateProfile = async (req, res) => {
   const updatedUser=await User.findOneAndUpdate({phone:req.body.phone},toUpdateObject,{new:true});
   res.send(updatedUser);
 };
+exports.logout=async (req,res)=>{
+  
+  res.cookie("auth", " ",{ httpOnly: true, maxAge:  100000 });
+  res.json({
+    STATUS: "You are successfully logged out.",
+  });
+}
