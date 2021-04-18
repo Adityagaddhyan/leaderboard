@@ -38,7 +38,7 @@ exports.checkIfPhoneIsValid = async (req, res, next) => {
 exports.isAuthorized = async (req, res, next) => {
   const token = req.cookies.auth;
   if (!token)
-    res
+    return res
       .status(401)
       .json({ ERR_MESSAGE: "Access Denied! Please log in or register." });
   try {
@@ -46,7 +46,7 @@ exports.isAuthorized = async (req, res, next) => {
     req.userID = decoded._id;
     next();
   } catch (err) {
-    res
+    return res
       .status(400)
       .json({ ERR_MESSAGE: "INVALID TOKEN. Please log in." });
   }
