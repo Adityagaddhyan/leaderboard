@@ -44,13 +44,12 @@ exports.login = async (req, res) => {
   var token = jwt.sign({ _id: user[0]._id }, process.env.SECRET_TEXT, {
     expiresIn: "1h",
   });
-  res.cookie("auth", token,{ httpOnly: true, maxAge:  100000 });
+  res.cookie("auth", token,{ httpOnly: true, maxAge:  1000000 });
   res.json({
     STATUS: "You are successfully logged in.",
     phone: user[0].phone,
     name: user[0].name,
     email: user[0].email,
-    token:token
   });
 };
 exports.updateProfile = async (req, res) => {
@@ -65,7 +64,7 @@ exports.updateProfile = async (req, res) => {
   }
 
   const updatedUser=await User.findOneAndUpdate({phone:req.body.phone},toUpdateObject,{new:true});
-  res.send(updatedUser);
+  res.json({STATUS:"profile updated SUCESSFULLY", phone:updatedUser.phone, userID:updatedUser._id});
 };
 exports.logout=async (req,res)=>{
   

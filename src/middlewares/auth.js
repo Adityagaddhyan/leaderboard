@@ -5,7 +5,7 @@ exports.checkIfEmailExist = async (req, res, next) => {
   console.log("req", req.body.email);
   if (emailExists.length && req.body.email) {
     console.log("from", emailExists);
-    return res.status(400).json({ ERR_MESSAGE: "Username already exist" });
+    return res.status(400).json({ ERR_MESSAGE: "email already registered" });
   } else {
     next();
   }
