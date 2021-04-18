@@ -12,10 +12,30 @@ exports.validateGameID = (req, res, next) => {
   }
 };
 exports.isScoresPresent = (req, res, next) => {
+  const p1 = parseInt(req.body.p1_score);
+  const p2 = parseInt(req.body.p2_score);
+  if (p1 == req.body.p1_score) {
+    res.status(400).json({ ERR_MESSAGE: "Please enter score of p1 correctly" });
+  } else if (p2 == req.body.p2_score) {
+    res.status(400).json({ ERR_MESSAGE: "Please enter score of p2 correctly" });
+  }
+
   if (req.body.p1_score === undefined || req.body.p1_score == null) {
     res.status(400).json({ ERR_MESSAGE: "Please enter score of p1" });
   } else if (req.body.p2_score === undefined || req.body.p2_score == null) {
     res.status(400).json({ ERR_MESSAGE: "Please enter score of p2" });
+  } else {
+    next();
+  }
+};
+exports.isOppentPhonePresent = (req, res, next) => {
+  if (
+    req.body.opponentMobile === undefined ||
+    req.body.opponentMobile == null
+  ) {
+    res
+      .status(400)
+      .json({ ERR_MESSAGE: "Please enter opponent mobile number." });
   } else {
     next();
   }

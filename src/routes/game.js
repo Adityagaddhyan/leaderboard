@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const {isScoresPresent,validateGameID}=require("../middlewares/game")
+const {isScoresPresent,validateGameID,isOppentPhonePresent}=require("../middlewares/game")
 const {isAuthorized}=require("../middlewares/auth")
 const gameController=require("../controllers/game")
 router.get("/",isAuthorized,gameController.getGame)
-router.post("/result",isAuthorized,isScoresPresent,validateGameID,gameController.playGame);
+router.post("/result",isAuthorized,isScoresPresent,validateGameID,isOppentPhonePresent,gameController.playGame);
 module.exports = router;
